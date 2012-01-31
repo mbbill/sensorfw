@@ -39,8 +39,10 @@
 // from configuration (like here). If locating the path needs processing
 // the path should be omitted here and set inside the constructor.
 SampleAdaptor::SampleAdaptor(const QString& id) :
-    SysfsAdaptor(id, SysfsAdaptor::SelectMode)
+    //SysfsAdaptor(id, SysfsAdaptor::SelectMode)
+	SysfsAdaptor(id, SysfsAdaptor::IntervalMode)
 {
+	addPath("/dev/null");
     // One can use SysfsAdaptor::addPath() to add additional paths for
     // monitoring. The paths are indexed in the order they are
     // added.
@@ -61,6 +63,9 @@ SampleAdaptor::SampleAdaptor(const QString& id) :
     // implement #NodeBase::setDataRange() to allow switching between
     // them (not properly tested, as such case has not yet occurred).
     introduceAvailableDataRange(DataRange(0, 65535, 1));
+
+    introduceAvailableInterval(DataRange(10, 586, 0));
+    setDefaultInterval(100);
 }
 
 SampleAdaptor::~SampleAdaptor()
@@ -70,6 +75,7 @@ SampleAdaptor::~SampleAdaptor()
 
 void SampleAdaptor::processSample(int pathId, int fd)
 {
+	static int i = 123;
     // PathID (provided with addPath(), or 0 if not given for a path set
     // with constructor. If only a single file is monitored, can be
     // ignored. If several files are monitored, can be used to detect
@@ -84,13 +90,13 @@ void SampleAdaptor::processSample(int pathId, int fd)
 
     // It's a good thing to provide read values to log for testing
     // level.
-    sensordLogT() << "Sample value: "; // << values read from fd
+    sensordLogT() << "Sample value: " << i ; // << values read from fd
 
     // Get a pointer to the output buffer
     TimedUnsigned* slot = outputBuffer_->nextSlot();
 
     // Copy the value to output buffer
-    slot->value_ = 0; // value read from fd
+    slot->value_ = i++; // value read from fd
 
     // Set the timestamp for sample
     slot->timestamp_ = Utils::getTimeStamp();

@@ -52,7 +52,7 @@ class SampleSensorChannel :
     // Accessor function for the value for clients. Type must be based
     // on QObject and marshallable over D-Bus. Usually it just wraps the
     // POD that is used internally.
-    Q_PROPERTY(Unsigned value READ get);
+    Q_PROPERTY(Unsigned value READ value);
 
 public:
     /**
@@ -72,7 +72,7 @@ public:
 
     // Implementation of the accessor function.
     // Unsigned(TimedUnsigned data) exists, so this is simple
-    Unsigned get() const { return Unsigned(previousSample_); }
+    Unsigned value() const { return Unsigned(previousSample_); }
 
 public Q_SLOTS:
     bool start();

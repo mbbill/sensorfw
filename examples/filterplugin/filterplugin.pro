@@ -19,3 +19,6 @@ HEADERS += samplefilter.h \
 
 SOURCES += samplefilter.cpp \
            samplefilterplugin.cpp
+
+include(../example-config.pri)
+           

@@ -65,6 +65,8 @@ SampleSensorChannel::SampleSensorChannel(const QString& id) :
     setRangeSource(sampleChain_);
     addStandbyOverrideSource(sampleChain_);
     setIntervalSource(sampleChain_);
+
+    setValid(true);
 }
 
 SampleSensorChannel::~SampleSensorChannel()

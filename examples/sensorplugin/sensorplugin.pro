@@ -22,3 +22,5 @@ SENSORFW_INCLUDEPATHS = ../../include \
 
 DEPENDPATH  += $$SENSORFW_INCLUDEPATHS
 INCLUDEPATH += $$SENSORFW_INCLUDEPATHS
+
+include(../example-config.pri)

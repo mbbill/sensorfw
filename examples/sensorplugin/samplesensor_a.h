@@ -35,12 +35,13 @@ class SampleSensorChannelAdaptor : public AbstractSensorChannelAdaptor
 {
     Q_OBJECT;
     Q_CLASSINFO("D-Bus Interface", "local.SampleSensor")
+    Q_PROPERTY(Unsigned value READ value)
 
 public:
-    Q_PROPERTY(Unsigned value READ get);
-    Unsigned get() const;
-
     SampleSensorChannelAdaptor(QObject* parent);
+
+public Q_SLOTS:
+    Unsigned value() const;
 
 Q_SIGNALS:
     void dataAvailable(const TimedUnsigned& data);

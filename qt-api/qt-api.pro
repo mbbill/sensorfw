@@ -16,7 +16,8 @@ SOURCES += sensormanagerinterface.cpp \
     proximitysensor_i.cpp \
     rotationsensor_i.cpp \
     magnetometersensor_i.cpp \
-    gyroscopesensor_i.cpp
+    gyroscopesensor_i.cpp \
+    samplesensor_i.cpp
 
 HEADERS += sensormanagerinterface.h \
     sensormanager_i.h \
@@ -30,7 +31,8 @@ HEADERS += sensormanagerinterface.h \
     proximitysensor_i.h \
     rotationsensor_i.h \
     magnetometersensor_i.h \
-    gyroscopesensor_i.h
+    gyroscopesensor_i.h \
+    samplesensor_i.h
 
 SENSORFW_INCLUDEPATHS = .. \
     ../include \

@@ -30,7 +30,7 @@ SampleSensorChannelAdaptor::SampleSensorChannelAdaptor(QObject* parent) :
 {
 }
 
-Unsigned SampleSensorChannelAdaptor::get() const
+Unsigned SampleSensorChannelAdaptor::value() const
 {
     // Return the value of the property in parent
     return qvariant_cast<Unsigned>(parent()->property("value"));
