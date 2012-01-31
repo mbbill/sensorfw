@@ -145,7 +145,7 @@ int main(int argc, char *argv[])
             exit(EXIT_SUCCESS);
         }
     }
-
+#if 0
     if (parser.magnetometerCalibration())
     {
         CalibrationHandler* calibrationHandler_ = new CalibrationHandler(NULL);
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
         QObject::connect(&sm, SIGNAL(resumeCalibration()), calibrationHandler_, SLOT(resumeCalibration()));
         QObject::connect(&sm, SIGNAL(stopCalibration()), calibrationHandler_, SLOT(stopCalibration()));
     }
-
+#endif
     if (!sm.registerService())
     {
         sensordLogW() << "Failed to register service on D-Bus. Aborting.";

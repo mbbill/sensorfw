@@ -1,0 +1,2 @@
+sudo killall sensord
+sudo ./sensord/sensord --log-level=test --log-target=1 --config-file=./90-sensord-default.conf --config-dir=./emptydir

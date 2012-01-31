@@ -55,8 +55,8 @@ void AccelerometerAdaptor::interpretEvent(int src, struct input_event *ev)
 {
     Q_UNUSED(src);
 
-    switch (ev->type) {
-        case EV_ABS:
+    //switch (ev->type) {
+     //   case EV_ABS:
             switch (ev->code) {
                 case ABS_X:
                     orientationValue_.x_ = ev->value;
@@ -68,8 +68,8 @@ void AccelerometerAdaptor::interpretEvent(int src, struct input_event *ev)
                     orientationValue_.z_ = ev->value;
                     break;
             }
-            break;
-    }
+   //         break;
+    //}
 }
 
 void AccelerometerAdaptor::interpretSync(int src, struct input_event *ev)
