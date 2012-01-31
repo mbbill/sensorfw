@@ -16,4 +16,9 @@ SUBDIRS = alsadaptor \
           proximityadaptor-evdev \
           proximityadaptor-ascii \
           mrstaccelerometer \
-          gyroscopeadaptor
+          gyroscopeadaptor \
+          pegatronaccelerometeradaptor \
+          oemtabletaccelerometer \
+          oaktrailaccelerometer \
+          oemtabletalsadaptor-ascii \
+          oemtabletgyroscopeadaptor
