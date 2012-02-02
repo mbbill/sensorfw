@@ -106,6 +106,7 @@ public Q_SLOTS:
     virtual void frameAvailable(const QVector<MagneticField>& frame);
     virtual void dataAvailable2(const XYZ&);
     virtual void frameAvailable2(const QVector<XYZ>& frame);
+    virtual void dataAvailable3(const Unsigned&);
     virtual void sampleDataChanged(const Unsigned& value);
 
 private:

@@ -42,7 +42,8 @@ ClientApiTest::ClientApiTest()
 {
     //bufferingSensors.append("magnetometersensor");
 	//bufferingSensors.append("samplesensor");
-	bufferingSensors.append("accelerometersensor");
+	//bufferingSensors.append("accelerometersensor");
+	bufferingSensors.append("orientationsensor");
 }
 
 AbstractSensorChannelInterface* ClientApiTest::getSensor(const QString& sensorName)
@@ -55,6 +56,8 @@ AbstractSensorChannelInterface* ClientApiTest::getSensor(const QString& sensorNa
         return RotationSensorChannelInterface::interface(sensorName);
     if (sensorName == "samplesensor" )
     	return SampleSensorChannelInterface::interface(sensorName);
+    if (sensorName == "orientationsensor")
+    	return OrientationSensorChannelInterface::interface(sensorName);
     return NULL;
 }
 
@@ -128,6 +131,9 @@ void ClientApiTest::initTestCase()
     remoteSensorManager.loadPlugin("accelerometersensor");
     remoteSensorManager.registerSensorInterface<AccelerometerSensorChannelInterface>("accelerometersensor");
 
+    remoteSensorManager.loadPlugin("orientationsensor");
+    remoteSensorManager.registerSensorInterface<OrientationSensorChannelInterface>("orientationsensor");
+
     remoteSensorManager.loadPlugin("samplesensor");
     remoteSensorManager.registerSensorInterface<SampleSensorChannelInterface>("samplesensor");
 }
@@ -142,38 +148,6 @@ void ClientApiTest::cleanup()
 
 void ClientApiTest::cleanupTestCase()
 {
-}
-
-void ClientApiTest::testOrientationSensor()
-{
-    QString sensorName("orientationsensor");
-    SensorManagerInterface& sm = SensorManagerInterface::instance();
-    QVERIFY( sm.isValid() );
-
-    // Get session
-    OrientationSensorChannelInterface* sensorIfc = OrientationSensorChannelInterface::interface(sensorName);
-    QScopedPointer<AbstractSensorChannelInterface> sensorTmp(sensorIfc);
-    QVERIFY2(sensorIfc && sensorIfc->isValid(), "Failed to get session");
-
-
-    // Attempt to get another session
-    OrientationSensorChannelInterface* sensorIfc2 = OrientationSensorChannelInterface::interface(sensorName);
-    QScopedPointer<AbstractSensorChannelInterface> sensorTmp2(sensorIfc2);
-    QVERIFY2(sensorIfc2, "Failed to get another session");
-
-    // Test properties
-    sensorIfc->setInterval(100);
-
-    QVERIFY(sensorIfc->orientation() == qvariant_cast<Unsigned>(sensorIfc->property("orientation")));
-
-    // test start
-    QDBusReply<void> reply = sensorIfc->start();
-    QVERIFY(reply.isValid());
-
-    // test stop
-    reply = sensorIfc->stop();
-    QVERIFY(reply.isValid());
-
 }
 
 
@@ -836,6 +810,10 @@ TestClient::TestClient(AbstractSensorChannelInterface& iface, bool listenFrames)
             connect(&iface, SIGNAL(frameAvailable(const QVector<MagneticField>&)), this, SLOT(frameAvailable(const QVector<MagneticField>&)));
         return;
     }
+    if (id == "orientationsensor"){
+    	connect(&iface, SIGNAL(orientationChanged(const Unsigned&)), this, SLOT(dataAvailable3(const Unsigned&)));
+    	return;
+    }
 
     connect(&iface, SIGNAL(dataAvailable(const XYZ&)), this, SLOT(dataAvailable2(const XYZ&)));
     if(listenFrames)
@@ -900,6 +878,18 @@ void TestClient::dataAvailable2(const XYZ& data)
              << (dataCount > -1 ? m_exTimeData.msecsTo(now) : 0)
              << " ms "
              << "xyz: "<< data.x() << " " << data.y() << " " << data.z();
+    m_exTimeData = now;
+}
+
+void TestClient::dataAvailable3(const Unsigned& data)
+{
+    QTime now = QTime::currentTime();
+    qDebug() << "dataAvailable3() "
+             << ++dataCount
+             << " in "
+             << (dataCount > -1 ? m_exTimeData.msecsTo(now) : 0)
+             << " ms "
+             << "Orientation: "<< data.x();
     m_exTimeData = now;
 }
 
@@ -1028,10 +1018,50 @@ void ClientApiTest::testAccelerometerSensor()
 
 }
 
+void ClientApiTest::testOrientationSensor()
+{
+    QString sensorName("orientationsensor");
+    SensorManagerInterface& sm = SensorManagerInterface::instance();
+    QVERIFY( sm.isValid() );
+
+    // Get session
+    OrientationSensorChannelInterface* sensorIfc = OrientationSensorChannelInterface::interface(sensorName);
+    QScopedPointer<AbstractSensorChannelInterface> sensorTmp(sensorIfc);
+    QVERIFY2(sensorIfc && sensorIfc->isValid(), "Failed to get session");
+
+
+    // Attempt to get another session
+    OrientationSensorChannelInterface* sensorIfc2 = OrientationSensorChannelInterface::interface(sensorName);
+    QScopedPointer<AbstractSensorChannelInterface> sensorTmp2(sensorIfc2);
+    QVERIFY2(sensorIfc2, "Failed to get another session");
+
+    // Test properties
+    sensorIfc->setInterval(100);
+
+    QVERIFY(sensorIfc->orientation() == qvariant_cast<Unsigned>(sensorIfc->property("orientation")));
+
+    // test start
+    QDBusReply<void> reply = sensorIfc->start();
+    QVERIFY(reply.isValid());
+
+    int i = 100;
+    while(i--)
+    {
+    	qDebug() << "Orientation.x : " << sensorIfc->orientation().x();
+    	QTest::qWait(100);
+    }
+
+    // test stop
+    reply = sensorIfc->stop();
+    QVERIFY(reply.isValid());
+
+}
+
 void ClientApiTest::testBuffering()
 {
     foreach(const QString& sensorName, bufferingSensors)
     {
+    	QTest::qWait(2000);
         AbstractSensorChannelInterface* sensor = getSensor(sensorName);
         QScopedPointer<AbstractSensorChannelInterface> sensorTmp(sensor);
         QVERIFY2(sensor && sensor->isValid(),QString("Could not get %1 sensor channel").arg(sensorName).toAscii());
