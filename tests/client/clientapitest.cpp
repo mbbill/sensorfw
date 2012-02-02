@@ -176,38 +176,6 @@ void ClientApiTest::testOrientationSensor()
 
 }
 
-void ClientApiTest::testAccelerometerSensor()
-{
-    QString sensorName("accelerometersensor");
-    SensorManagerInterface& sm = SensorManagerInterface::instance();
-    QVERIFY( sm.isValid() );
-
-    // Get session
-    AccelerometerSensorChannelInterface* sensorIfc = AccelerometerSensorChannelInterface::interface(sensorName);
-    QScopedPointer<AbstractSensorChannelInterface> sensorTmp(sensorIfc);
-    QVERIFY2(sensorIfc && sensorIfc->isValid(), "Failed to get control session");
-
-    // Attempt to get another session
-    AccelerometerSensorChannelInterface* sensorIfc2 = AccelerometerSensorChannelInterface::interface(sensorName);
-    QScopedPointer<AbstractSensorChannelInterface> sensorTmp2(sensorIfc2);
-    QVERIFY2(sensorIfc2, "Failed to get another session");
-
-    // Test properties
-    sensorIfc->setInterval(100);
-
-    // test start
-    QDBusReply<void> reply = sensorIfc->start();
-    QVERIFY(reply.isValid());
-
-    // test stop
-    reply = sensorIfc->stop();
-    QVERIFY(reply.isValid());
-
-    XYZ sample1 = sensorIfc->get();
-    XYZ sample2 = qvariant_cast<XYZ>(sensorIfc->property("value"));
-    QVERIFY(sample1 == sample2);
-
-}
 
 void ClientApiTest::testGyroscopeSensor()
 {
@@ -1018,6 +986,46 @@ void ClientApiTest::testSampleSensor()
     qDebug() << "get(): " << sensorIfc->value().x() << endl;
 
     delete sensorIfc;
+}
+
+void ClientApiTest::testAccelerometerSensor()
+{
+    QString sensorName("accelerometersensor");
+    SensorManagerInterface& sm = SensorManagerInterface::instance();
+    QVERIFY( sm.isValid() );
+
+    // Get session
+    AccelerometerSensorChannelInterface* sensorIfc = AccelerometerSensorChannelInterface::interface(sensorName);
+    QScopedPointer<AbstractSensorChannelInterface> sensorTmp(sensorIfc);
+    QVERIFY2(sensorIfc && sensorIfc->isValid(), "Failed to get control session");
+
+    // Attempt to get another session
+    //AccelerometerSensorChannelInterface* sensorIfc2 = AccelerometerSensorChannelInterface::interface(sensorName);
+    //QScopedPointer<AbstractSensorChannelInterface> sensorTmp2(sensorIfc2);
+    //QVERIFY2(sensorIfc2, "Failed to get another session");
+
+    // Test properties
+    sensorIfc->setInterval(100);
+
+    // test start
+    QDBusReply<void> reply = sensorIfc->start();
+    QVERIFY(reply.isValid());
+
+    int i = 100;
+    while(i--)
+    {
+    	qDebug() << "x,y,z : " << sensorIfc->get().x() << "," << sensorIfc->get().y() << "," << sensorIfc->get().z();
+    	QTest::qWait(100);
+    }
+
+    // test stop
+    reply = sensorIfc->stop();
+    QVERIFY(reply.isValid());
+
+    XYZ sample1 = sensorIfc->get();
+    XYZ sample2 = qvariant_cast<XYZ>(sensorIfc->property("value"));
+    QVERIFY(sample1 == sample2);
+
 }
 
 void ClientApiTest::testBuffering()
