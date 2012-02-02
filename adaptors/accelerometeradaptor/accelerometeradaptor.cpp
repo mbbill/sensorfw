@@ -83,9 +83,11 @@ void AccelerometerAdaptor::commitOutput(struct input_event *ev)
     AccelerationData* d = accelerometerBuffer_->nextSlot();
 
     d->timestamp_ = Utils::getTimeStamp(&(ev->time));
-    d->x_ = orientationValue_.x_;
-    d->y_ = orientationValue_.y_;
-    d->z_ = orientationValue_.z_;
+    // dummy modification for testing purpose.
+static int x = -9, y = 0, z = 9;
+    d->x_ = orientationValue_.x_ = (x++)%10;
+    d->y_ = orientationValue_.y_ = (y++)%10;
+    d->z_ = orientationValue_.z_ = (z++)%10;
 
     sensordLogT() << "Accelerometer reading: " << d->x_ << ", " << d->y_ << ", " << d->z_;
 

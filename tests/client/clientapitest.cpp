@@ -42,8 +42,8 @@ ClientApiTest::ClientApiTest()
 {
     //bufferingSensors.append("magnetometersensor");
 	//bufferingSensors.append("samplesensor");
-	//bufferingSensors.append("accelerometersensor");
-	bufferingSensors.append("orientationsensor");
+	bufferingSensors.append("accelerometersensor");
+	//bufferingSensors.append("orientationsensor");
 }
 
 AbstractSensorChannelInterface* ClientApiTest::getSensor(const QString& sensorName)
