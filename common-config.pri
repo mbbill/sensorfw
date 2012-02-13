@@ -8,6 +8,7 @@ QT += dbus
 QT -= gui
 CONFIG += debug
 CONFIG += thread
+CONFIG += mce_disable
 
 # Maemo specific options
 #CONFIG += contextprovider
@@ -28,3 +29,5 @@ profile {
 profile-libc {
   QMAKE_LFLAGS += -lc_p
 }
+
+QMAKE_LFLAGS += -lrt

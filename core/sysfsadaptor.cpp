@@ -480,6 +480,7 @@ void SysfsAdaptor::init()
     QString path = Config::configuration()->value(name() + "/path").toString();
     if(!path.isEmpty())
     {
+    	sensordLogD() << "add path: " << path;
         addPath(path);
     }
     else
