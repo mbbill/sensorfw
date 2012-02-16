@@ -1084,6 +1084,13 @@ void ClientApiTest::testBuffering()
 
         for (int i = 0; i < 10; i++)
         {
+        	QTest::qWait(period);
+        	while(++i)
+        	{
+        		//qDebug() << "==============";
+        		printf("%d\n",i);
+        		QCoreApplication::processEvents(QEventLoop::AllEvents,500);
+        	}
             qDebug() << sensorName << " started, waiting for " << period << " ms.";
             QTest::qWait(period);
             int dataCount = client.getDataCount();
